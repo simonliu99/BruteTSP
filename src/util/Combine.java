@@ -18,6 +18,7 @@ public class Combine {
         for (int c : l) {
             b.add(c);
         }
+        b.add(b.get(0));
         combinated.add(b);
         int[] p = new int[n];
         int i = 1;
@@ -30,6 +31,7 @@ public class Combine {
                 for (int d : l) {
                     temp.add(d);
                 }
+                temp.add(temp.get(0));
                 combinated.add(temp);
                 p[i]++;
                 i = 1;

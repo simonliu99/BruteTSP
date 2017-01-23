@@ -47,8 +47,8 @@ public class TSPData {
             }
 
             // Flush all data to data files
-            String outputName = "datum" + String.valueOf(i) + ".txt";
-            String path = System.getProperty("user.dir") + File.separator + "data" + File.separator + String.valueOf(i) + File.separator + outputName;
+            String outputName = "datum" + String.valueOf(i) + "v2.txt";
+            String path = System.getProperty("user.dir") + File.separator + "output" + File.separator + "v2" + File.separator + outputName;
             Path file = Paths.get(path);
             Files.write(file, nodeValues, Charset.forName("UTF-8"));
         }
@@ -56,7 +56,7 @@ public class TSPData {
 
     // Reads text file from input list and converts it into a list of strings
     static List<String> getList(String f) throws IOException {
-        String fileName = System.getProperty("user.dir") + File.separator + "inputs" + File.separator + f + ".txt";
+        String fileName = System.getProperty("user.dir") + File.separator + "input" + File.separator + f + ".txt";
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
         List<String> lines = new ArrayList<>();
         String line = reader.readLine();
