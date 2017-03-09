@@ -5,21 +5,21 @@ import java.util.List;
 
 /**
  * Created by Simon on 1/5/17.
- * Combine's combinate function returns a list of all possible combinations of a given list of numbers
+ * Permutation's permutate function returns a list of all possible permutations of a given list of numbers
  */
-public class Combine {
-    public static List<List<Integer>> combinate(int n) {
+public class Permutation {
+    public static List<List<Integer>> permutate(int n) {
         int[] l = new int[n];
         for (int i = 0; i < n; i++) {
             l[i] = i;
         }
-        List<List<Integer>> combinated= new ArrayList<>();
+        List<List<Integer>> permutated= new ArrayList<>();
         List<Integer> b = new ArrayList<>();
         for (int c : l) {
             b.add(c);
         }
         b.add(b.get(0));
-        combinated.add(b);
+        permutated.add(b);
         int[] p = new int[n];
         int i = 1;
         List<Integer> temp = new ArrayList<>();
@@ -32,7 +32,7 @@ public class Combine {
                     temp.add(d);
                 }
                 temp.add(temp.get(0));
-                combinated.add(temp);
+                permutated.add(temp);
                 p[i]++;
                 i = 1;
             }
@@ -41,7 +41,7 @@ public class Combine {
                 i++;
             }
         }
-        return combinated;
+        return permutated;
     }
 
     private static int[] swap(int[] a, int i, int j) {

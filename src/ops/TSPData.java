@@ -3,7 +3,7 @@ package ops;
 import brutetsp.Datum;
 import brutetsp.Node;
 import brutetsp.NodeFactory;
-import util.Combine;
+import util.Permutation;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -74,15 +74,15 @@ public class TSPData {
     private static Datum getTime(int n, List<String> L) {
         List<List<Node>> nodes;
         NodeFactory nodeFactory;
-        Combine comb = new Combine();
+        Permutation perm = new Permutation();
         double startTime = System.nanoTime();
         nodeFactory = new NodeFactory(L);
         nodes = nodeFactory.getNodes();
-        List<List<Integer>> combinations = comb.combinate(n);
+        List<List<Integer>> permutations = perm.permutate(n);
         List<Double> times = new ArrayList<>();
 
-        //Runs through each combination of paths to find minimum time path
-        for (List<Integer> row : combinations) {
+        //Runs through each permutation of paths to find minimum time path
+        for (List<Integer> row : permutations) {
             double currentTime = 0;
             double finalTime = 0;
             for (int j = 0; j < row.size() - 1; j++) {

@@ -2,7 +2,7 @@ package ops;
 
 import brutetsp.Node;
 import brutetsp.NodeFactory;
-import util.Combine;
+import util.Permutation;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,8 +22,8 @@ public class TSPImport {
         int n = 5;
         nodeFactory = new NodeFactory(getList("CALIBRATE"));
         nodes = nodeFactory.getNodes();
-        List<List<Integer>> combinations = Combine.combinate(n);
-        for (List<Integer> row : combinations) {
+        List<List<Integer>> permutations = Permutation.permutate(n);
+        for (List<Integer> row : permutations) {
             double startTime = 0;
             double finalTime = 0;
             for (int j = 0; j < row.size() - 1; j++) {
