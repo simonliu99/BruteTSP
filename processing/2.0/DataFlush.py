@@ -14,7 +14,7 @@ for i in range(5, 12):
     ##fA = openFile(fileAppend)
     sh = book.create_sheet(str(i))
     sh.cell(row=1,column=1).value = 'Distance'
-    for j in range(0, 9):
+    for j in range(0, 10):
         index = j * 102
         sh.cell(row=1, column=j+2).value = float(fI[index+1].split(' ')[1])
         for k in range(1, 101):

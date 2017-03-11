@@ -1,0 +1,93 @@
+<html>
+<head>
+<title>TSPImport.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,0,255); }
+.s4 { color: rgb(0,128,0); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+TSPImport.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">ops; 
+ 
+</span><span class="s0">import </span><span class="s1">brutetsp.Node; 
+</span><span class="s0">import </span><span class="s1">brutetsp.NodeFactory; 
+</span><span class="s0">import </span><span class="s1">util.Permutation; 
+ 
+</span><span class="s0">import </span><span class="s1">java.io.BufferedReader; 
+</span><span class="s0">import </span><span class="s1">java.io.File; 
+</span><span class="s0">import </span><span class="s1">java.io.FileReader; 
+</span><span class="s0">import </span><span class="s1">java.io.IOException; 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+</span><span class="s0">import </span><span class="s1">java.util.List; 
+ 
+</span><span class="s2">/** 
+ * Created by Simon on 1/5/2017. 
+ */</span><span class="s1"> 
+</span><span class="s0">public class </span><span class="s1">TSPImport { 
+    </span><span class="s0">public static void </span><span class="s1">main(String[] args) </span><span class="s0">throws </span><span class="s1">IOException { 
+        List&lt;List&lt;Node&gt;&gt; nodes; 
+        NodeFactory nodeFactory; 
+        </span><span class="s0">double </span><span class="s1">runTime = System.nanoTime(); 
+        </span><span class="s0">int </span><span class="s1">n = </span><span class="s3">5</span><span class="s1">; 
+        nodeFactory = </span><span class="s0">new </span><span class="s1">NodeFactory(getList(</span><span class="s4">&quot;CALIBRATE&quot;</span><span class="s1">)); 
+        nodes = nodeFactory.getNodes(); 
+        List&lt;List&lt;Integer&gt;&gt; permutations = Permutation.permutate(n); 
+        </span><span class="s0">for </span><span class="s1">(List&lt;Integer&gt; row : permutations) { 
+            </span><span class="s0">double </span><span class="s1">startTime = </span><span class="s3">0</span><span class="s1">; 
+            </span><span class="s0">double </span><span class="s1">finalTime = </span><span class="s3">0</span><span class="s1">; 
+            </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">j = </span><span class="s3">0</span><span class="s1">; j &lt; row.size() - </span><span class="s3">1</span><span class="s1">; j++) { 
+                </span><span class="s0">int </span><span class="s1">rowVal; 
+                </span><span class="s0">int </span><span class="s1">columnVal; 
+                </span><span class="s0">if </span><span class="s1">(row.get(j) &gt; row.get(j + </span><span class="s3">1</span><span class="s1">)) { 
+                    rowVal = row.get(j); 
+                    columnVal = row.get(j + </span><span class="s3">1</span><span class="s1">); 
+                } </span><span class="s0">else </span><span class="s1">{ 
+                    rowVal = row.get(j + </span><span class="s3">1</span><span class="s1">); 
+                    columnVal = row.get(j); 
+                } 
+                finalTime += nodes.get(rowVal).get(columnVal).time(startTime); 
+                startTime = finalTime; 
+                </span><span class="s0">if </span><span class="s1">(j == row.size() - </span><span class="s3">1</span><span class="s1">) { 
+                    </span><span class="s0">if </span><span class="s1">(row.get(</span><span class="s3">0</span><span class="s1">) &gt; row.get(row.size() - </span><span class="s3">1</span><span class="s1">)) { 
+                        rowVal = row.get(</span><span class="s3">0</span><span class="s1">); 
+                        columnVal = row.get(row.size() - </span><span class="s3">1</span><span class="s1">); 
+                    } </span><span class="s0">else </span><span class="s1">{ 
+                        rowVal = row.get(row.size() - </span><span class="s3">1</span><span class="s1">); 
+                        columnVal = row.get(</span><span class="s3">0</span><span class="s1">); 
+                    } 
+                    finalTime += nodes.get(rowVal).get(columnVal).time(startTime); 
+                } 
+            } 
+        } 
+        System.out.print((System.nanoTime() - runTime)/</span><span class="s3">1000000</span><span class="s1">); 
+    } 
+ 
+    </span><span class="s0">static </span><span class="s1">List&lt;String&gt; getList(String f) </span><span class="s0">throws </span><span class="s1">IOException { 
+        String fileName = System.getProperty(</span><span class="s4">&quot;user.dir&quot;</span><span class="s1">) + File.separator + </span><span class="s4">&quot;inputs&quot; </span><span class="s1">+ File.separator + f + </span><span class="s4">&quot;.txt&quot;</span><span class="s1">; 
+        BufferedReader reader = </span><span class="s0">new </span><span class="s1">BufferedReader(</span><span class="s0">new </span><span class="s1">FileReader(fileName)); 
+        List&lt;String&gt; lines = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
+        String line = reader.readLine(); 
+ 
+        </span><span class="s0">while</span><span class="s1">(line != </span><span class="s0">null</span><span class="s1">) { 
+            lines.add(line); 
+            line = reader.readLine(); 
+        } 
+        reader.close(); 
+ 
+        </span><span class="s0">return </span><span class="s1">lines; 
+    } 
+} 
+</span></pre>
+</body>
+</html>

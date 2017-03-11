@@ -1,0 +1,130 @@
+<html>
+<head>
+<title>TSPData.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,0,255); }
+.s4 { color: rgb(0,128,0); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+TSPData.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">ops; 
+ 
+</span><span class="s0">import </span><span class="s1">brutetsp.Datum; 
+</span><span class="s0">import </span><span class="s1">brutetsp.Node; 
+</span><span class="s0">import </span><span class="s1">brutetsp.NodeFactory; 
+</span><span class="s0">import </span><span class="s1">util.Permutation; 
+ 
+</span><span class="s0">import </span><span class="s1">java.io.BufferedReader; 
+</span><span class="s0">import </span><span class="s1">java.io.File; 
+</span><span class="s0">import </span><span class="s1">java.io.FileReader; 
+</span><span class="s0">import </span><span class="s1">java.io.IOException; 
+</span><span class="s0">import </span><span class="s1">java.nio.charset.Charset; 
+</span><span class="s0">import </span><span class="s1">java.nio.file.Files; 
+</span><span class="s0">import </span><span class="s1">java.nio.file.Path; 
+</span><span class="s0">import </span><span class="s1">java.nio.file.Paths; 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+</span><span class="s0">import </span><span class="s1">java.util.Collections; 
+</span><span class="s0">import </span><span class="s1">java.util.List; 
+ 
+</span><span class="s2">/** 
+ * Created by Simon on 1/6/2017. 
+ * Data collection TSP runs brute force simulations multiple times and outputs to text file. 
+ */</span><span class="s1"> 
+</span><span class="s0">public class </span><span class="s1">TSPData { 
+    </span><span class="s0">public static void </span><span class="s1">main(String[] args) </span><span class="s0">throws </span><span class="s1">IOException { 
+        </span><span class="s2">// Calibrate to get all packages and libraries initialized</span><span class="s1"> 
+        Datum calibrate = getTime(</span><span class="s3">7</span><span class="s1">, getList(</span><span class="s4">&quot;CALIBRATION&quot;</span><span class="s1">)); 
+        System.out.print(calibrate.getMinTime() + System.lineSeparator()); 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s3">5</span><span class="s1">; i &lt; </span><span class="s3">12</span><span class="s1">; i++) { </span><span class="s2">// Loop for all K graphs from K5 to K11</span><span class="s1"> 
+            List&lt;String&gt; nodeValues = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
+            </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">j = </span><span class="s3">1</span><span class="s1">; j &lt; </span><span class="s3">11</span><span class="s1">; j++) { </span><span class="s2">// Run through all 10 input files</span><span class="s1"> 
+                String inputName = String.valueOf(i) + File.separator + String.valueOf(j); 
+                List&lt;String&gt; fileValues = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
+                </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">k = </span><span class="s3">0</span><span class="s1">; k &lt; </span><span class="s3">100</span><span class="s1">; k++) { </span><span class="s2">// Execute each data file 100 times</span><span class="s1"> 
+                    List&lt;String&gt; list = getList(inputName); 
+                    Datum result = getTime(i, list); 
+                    </span><span class="s0">double </span><span class="s1">runTime = result.getRunTime(); 
+                    </span><span class="s0">double </span><span class="s1">minTime = result.getMinTime(); 
+                    </span><span class="s0">if </span><span class="s1">(k == </span><span class="s3">0</span><span class="s1">) { </span><span class="s2">// Add data heading before trial output</span><span class="s1"> 
+                        fileValues.add(String.valueOf(j)); 
+                    } 
+                    System.out.print(i + </span><span class="s4">&quot; &quot; </span><span class="s1">+ k + </span><span class="s4">&quot; &quot; </span><span class="s1">+ runTime + </span><span class="s4">&quot; &quot; </span><span class="s1">+ minTime + System.lineSeparator()); 
+                    fileValues.add(String.valueOf(runTime) + </span><span class="s4">&quot; &quot; </span><span class="s1">+ String.valueOf(minTime)); 
+                } 
+                nodeValues.addAll(fileValues); 
+                nodeValues.add(</span><span class="s4">&quot;-&quot;</span><span class="s1">); 
+            } 
+ 
+            </span><span class="s2">// Flush all data to data files</span><span class="s1"> 
+            String outputName = </span><span class="s4">&quot;datum&quot; </span><span class="s1">+ String.valueOf(i) + </span><span class="s4">&quot;v2.txt&quot;</span><span class="s1">; 
+            String path = System.getProperty(</span><span class="s4">&quot;user.dir&quot;</span><span class="s1">) + File.separator + </span><span class="s4">&quot;output&quot; </span><span class="s1">+ File.separator + </span><span class="s4">&quot;v2&quot; </span><span class="s1">+ File.separator + outputName; 
+            Path file = Paths.get(path); 
+            Files.write(file, nodeValues, Charset.forName(</span><span class="s4">&quot;UTF-8&quot;</span><span class="s1">)); 
+        } 
+    } 
+ 
+    </span><span class="s2">// Reads text file from input list and converts it into a list of strings</span><span class="s1"> 
+    </span><span class="s0">static </span><span class="s1">List&lt;String&gt; getList(String f) </span><span class="s0">throws </span><span class="s1">IOException { 
+        String fileName = System.getProperty(</span><span class="s4">&quot;user.dir&quot;</span><span class="s1">) + File.separator + </span><span class="s4">&quot;input&quot; </span><span class="s1">+ File.separator + f + </span><span class="s4">&quot;.txt&quot;</span><span class="s1">; 
+        BufferedReader reader = </span><span class="s0">new </span><span class="s1">BufferedReader(</span><span class="s0">new </span><span class="s1">FileReader(fileName)); 
+        List&lt;String&gt; lines = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
+        String line = reader.readLine(); 
+ 
+        </span><span class="s0">while</span><span class="s1">(line != </span><span class="s0">null</span><span class="s1">) { 
+            lines.add(line); 
+            line = reader.readLine(); 
+        } 
+        reader.close(); 
+ 
+        </span><span class="s0">return </span><span class="s1">lines; 
+    } 
+ 
+    </span><span class="s2">// Takes a list of strings for n vertices and returns the time it takes for the program to brute force this TSP</span><span class="s1"> 
+    </span><span class="s0">private static </span><span class="s1">Datum getTime(</span><span class="s0">int </span><span class="s1">n, List&lt;String&gt; L) { 
+        List&lt;List&lt;Node&gt;&gt; nodes; 
+        NodeFactory nodeFactory; 
+        Permutation perm = </span><span class="s0">new </span><span class="s1">Permutation(); 
+        </span><span class="s0">double </span><span class="s1">startTime = System.nanoTime(); 
+        nodeFactory = </span><span class="s0">new </span><span class="s1">NodeFactory(L); 
+        nodes = nodeFactory.getNodes(); 
+        List&lt;List&lt;Integer&gt;&gt; permutations = perm.permutate(n); 
+        List&lt;Double&gt; times = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
+ 
+        </span><span class="s2">//Runs through each permutation of paths to find minimum time path</span><span class="s1"> 
+        </span><span class="s0">for </span><span class="s1">(List&lt;Integer&gt; row : permutations) { 
+            </span><span class="s0">double </span><span class="s1">currentTime = </span><span class="s3">0</span><span class="s1">; 
+            </span><span class="s0">double </span><span class="s1">finalTime = </span><span class="s3">0</span><span class="s1">; 
+            </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">j = </span><span class="s3">0</span><span class="s1">; j &lt; row.size() - </span><span class="s3">1</span><span class="s1">; j++) { 
+                </span><span class="s0">int </span><span class="s1">rowVal; 
+                </span><span class="s0">int </span><span class="s1">columnVal; 
+                </span><span class="s0">if </span><span class="s1">(row.get(j) &gt; row.get(j + </span><span class="s3">1</span><span class="s1">)) { 
+                    rowVal = row.get(j); 
+                    columnVal = row.get(j + </span><span class="s3">1</span><span class="s1">); 
+                } </span><span class="s0">else </span><span class="s1">{ 
+                    rowVal = row.get(j + </span><span class="s3">1</span><span class="s1">); 
+                    columnVal = row.get(j); 
+                } 
+                finalTime += nodes.get(rowVal).get(columnVal).time(currentTime); 
+                currentTime = finalTime; 
+            } 
+            times.add(finalTime); 
+        } 
+        </span><span class="s0">double </span><span class="s1">minTime = Collections.min(times); 
+        </span><span class="s0">double </span><span class="s1">runtime =(System.nanoTime() - startTime)/</span><span class="s3">1000000</span><span class="s1">; 
+        </span><span class="s0">return new </span><span class="s1">Datum(minTime, runtime); </span><span class="s2">// Return minimum time and total run time in Datum object form</span><span class="s1"> 
+    } 
+} 
+</span></pre>
+</body>
+</html>
